@@ -2,14 +2,22 @@
 
 import { createNewGameAndCopyScores, updateAllScores } from "@/actions/score";
 import { Trophy, Plus, Loader2 } from "lucide-react";
-import Link from "next/link";
 import { SubmitButton } from "@/components/SubmitButton";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export function GameSelector({ games, selectedGameId }: { games: any[], selectedGameId: number | null }) {
+export function GameSelector({
+  games,
+  selectedGameId,
+  tournamentId,
+}: {
+  games: any[];
+  selectedGameId: number | null;
+  tournamentId: number;
+}) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -19,7 +27,10 @@ export function GameSelector({ games, selectedGameId }: { games: any[], selected
   const handleSelect = (id: number) => {
     if (id === selectedGameId) return;
     setLoadingId(id);
-    router.push(`/admin/scores?gameId=${id}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("gameId", String(id));
+    params.set("tournamentId", String(tournamentId));
+    router.push(`/admin/scores?${params.toString()}`);
   };
 
   return (
@@ -43,9 +54,10 @@ export function GameSelector({ games, selectedGameId }: { games: any[], selected
   );
 }
 
-export function NewGameButton() {
+export function NewGameButton({ tournamentId }: { tournamentId: number }) {
   return (
     <form action={createNewGameAndCopyScores}>
+      <input type="hidden" name="tournamentId" value={tournamentId} />
       <SubmitButton
         loadingText="作成中..."
         className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors shadow-sm"
@@ -57,11 +69,19 @@ export function NewGameButton() {
   );
 }
 
-export function ScoreListForm({ gameId, users, scoresMap }: { gameId: number, users: any[], scoresMap: Record<number, number> }) {
+export function ScoreListForm({
+  gameId,
+  users,
+  scoresMap,
+}: {
+  gameId: number;
+  users: any[];
+  scoresMap: Record<number, number>;
+}) {
   return (
     <form action={updateAllScores}>
       <input type="hidden" name="gameId" value={gameId} />
-      
+
       <div className="space-y-3 mb-6">
         {users.map((user) => (
           <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors">
@@ -69,7 +89,7 @@ export function ScoreListForm({ gameId, users, scoresMap }: { gameId: number, us
               <Trophy size={18} className="text-amber-500" />
               <span className="font-medium text-slate-800">{user.username}</span>
             </div>
-            
+
             <input
               type="number"
               name={`score_${user.id}`}

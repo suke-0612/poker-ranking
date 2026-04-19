@@ -3,9 +3,12 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function createNewGameAndCopyScores() {
-  const activeTournament = await prisma.tournament.findFirst({
-    where: { isActive: true },
+export async function createNewGameAndCopyScores(formData: FormData) {
+  const tournamentId = parseInt(formData.get("tournamentId") as string);
+  if (!tournamentId) return { error: "No tournament specified." };
+
+  const tournament = await prisma.tournament.findUnique({
+    where: { id: tournamentId },
     include: {
       games: {
         orderBy: { createdAt: "desc" },
@@ -15,13 +18,13 @@ export async function createNewGameAndCopyScores() {
     },
   });
 
-  if (!activeTournament) return { error: "No active tournament." };
+  if (!tournament) return { error: "Tournament not found." };
 
   const newGame = await prisma.game.create({
-    data: { tournamentId: activeTournament.id },
+    data: { tournamentId },
   });
 
-  const lastGame = activeTournament.games[0];
+  const lastGame = tournament.games[0];
   if (lastGame && lastGame.scores.length > 0) {
     const newScores = lastGame.scores.map((s: { userId: number; score: number }) => ({
       gameId: newGame.id,

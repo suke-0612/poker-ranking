@@ -12,17 +12,21 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String
-  isActive  Boolean  @default(true) // 論理削除用
-  createdAt DateTime @default(now()) // 同点時のソート保証用
-  scores    Score[]
+  id           Int        @id @default(autoincrement())
+  tournamentId Int
+  username     String
+  isActive     Boolean    @default(true) // 論理削除用
+  createdAt    DateTime   @default(now()) // 同点時のソート保証用
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  scores       Score[]
 }
 
 model Tournament {
   id        Int      @id @default(autoincrement())
+  name      String?  // 大会名（任意）
   isActive  Boolean  @default(true) // 進行中の大会のみ true
   createdAt DateTime @default(now())
+  users     User[]
   prizes    Prize[]
   games     Game[]
 }
@@ -48,8 +52,8 @@ model Score {
   gameId Int
   userId Int
   score  Int    // 0以上の絶対値
-  game   Game   @relation(fields: [gameId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([gameId, userId])
 }

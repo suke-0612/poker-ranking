@@ -1,18 +1,33 @@
 "use client";
 
 import useSWR from "swr";
+import { useState } from "react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR("/api/ranking", fetcher, {
-    refreshInterval: 15000, // 15 seconds
+  const [selectedTournamentId, setSelectedTournamentId] = useState<number | null>(null);
+
+  const apiUrl = selectedTournamentId
+    ? `/api/ranking?tournamentId=${selectedTournamentId}`
+    : `/api/ranking`;
+
+  const { data, error, isLoading } = useSWR(apiUrl, fetcher, {
+    refreshInterval: 15000,
+    onSuccess: (d) => {
+      // 初回ロード時に大会IDをセット
+      if (selectedTournamentId === null && d?.tournament?.id) {
+        setSelectedTournamentId(d.tournament.id);
+      }
+    },
   });
 
   if (error) return <div className="p-8 text-destructive text-center font-bold">Failed to load ranking</div>;
   if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading ranking...</div>;
 
   const ranking = data?.ranking || [];
+  const activeTournaments: { id: number; name: string | null }[] = data?.activeTournaments || [];
+  const currentTournament = data?.tournament;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col items-center justify-center p-8">
@@ -23,6 +38,32 @@ export default function Home() {
           </h1>
           <p className="text-slate-400 font-medium">Live Leaderboard</p>
         </div>
+
+        {/* 大会セレクター（複数開催中の場合のみ表示） */}
+        {activeTournaments.length > 1 && (
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            {activeTournaments.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedTournamentId(t.id)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedTournamentId === t.id
+                    ? "bg-amber-500 text-white shadow"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                }`}
+              >
+                {t.name || `大会 #${t.id}`}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* 大会名表示 */}
+        {currentTournament?.name && (
+          <p className="text-center text-slate-400 text-sm">
+            {currentTournament.name}
+          </p>
+        )}
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
           <table className="w-full text-left text-sm md:text-base">

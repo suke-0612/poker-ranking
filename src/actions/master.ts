@@ -5,10 +5,11 @@ import { revalidatePath } from "next/cache";
 
 export async function addUser(formData: FormData) {
   const username = formData.get("username") as string;
-  if (!username) return;
+  const tournamentId = parseInt(formData.get("tournamentId") as string);
+  if (!username || !tournamentId) return;
 
   await prisma.user.create({
-    data: { username },
+    data: { username, tournamentId },
   });
 
   revalidatePath("/admin/master");
@@ -24,11 +25,8 @@ export async function toggleUserActive(id: number, isActive: boolean) {
 }
 
 export async function updatePrizes(formData: FormData) {
-  const activeTournament = await prisma.tournament.findFirst({
-    where: { isActive: true },
-  });
-
-  if (!activeTournament) return;
+  const tournamentId = parseInt(formData.get("tournamentId") as string);
+  if (!tournamentId) return;
 
   for (let i = 1; i <= 10; i++) {
     const description = formData.get(`prize_${i}`) as string;
@@ -37,13 +35,13 @@ export async function updatePrizes(formData: FormData) {
       await prisma.prize.upsert({
         where: {
           tournamentId_rank: {
-            tournamentId: activeTournament.id,
+            tournamentId,
             rank: i,
           },
         },
         update: { description },
         create: {
-          tournamentId: activeTournament.id,
+          tournamentId,
           rank: i,
           description,
         },
@@ -51,12 +49,20 @@ export async function updatePrizes(formData: FormData) {
     } else {
       await prisma.prize.deleteMany({
         where: {
-          tournamentId: activeTournament.id,
+          tournamentId,
           rank: i,
         },
       });
     }
   }
+
+  revalidatePath("/admin/master");
+}
+
+export async function deleteUser(id: number) {
+  await prisma.user.delete({
+    where: { id }
+  });
 
   revalidatePath("/admin/master");
 }
