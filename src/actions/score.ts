@@ -33,12 +33,11 @@ export async function createNewGameAndCopyScores() {
 
   revalidatePath("/admin/scores");
   revalidatePath("/");
-  return { success: true };
 }
 
 export async function updateAllScores(formData: FormData) {
   const gameId = parseInt(formData.get("gameId") as string);
-  if (!gameId) return { error: "Invalid game ID" };
+  if (!gameId) return;
 
   const updates = [];
   
@@ -63,5 +62,4 @@ export async function updateAllScores(formData: FormData) {
 
   revalidatePath("/admin/scores");
   revalidatePath("/");
-  return { success: true };
 }

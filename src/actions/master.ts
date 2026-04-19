@@ -5,14 +5,13 @@ import { revalidatePath } from "next/cache";
 
 export async function addUser(formData: FormData) {
   const username = formData.get("username") as string;
-  if (!username) return { error: "Username is required" };
+  if (!username) return;
 
   await prisma.user.create({
     data: { username },
   });
 
   revalidatePath("/admin/master");
-  return { success: true };
 }
 
 export async function toggleUserActive(id: number, isActive: boolean) {
@@ -29,7 +28,7 @@ export async function updatePrizes(formData: FormData) {
     where: { isActive: true },
   });
 
-  if (!activeTournament) return { error: "No active tournament found." };
+  if (!activeTournament) return;
 
   for (let i = 1; i <= 10; i++) {
     const description = formData.get(`prize_${i}`) as string;
@@ -50,7 +49,6 @@ export async function updatePrizes(formData: FormData) {
         },
       });
     } else {
-      // If empty, delete the prize
       await prisma.prize.deleteMany({
         where: {
           tournamentId: activeTournament.id,
@@ -61,5 +59,4 @@ export async function updatePrizes(formData: FormData) {
   }
 
   revalidatePath("/admin/master");
-  return { success: true };
 }

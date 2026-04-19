@@ -15,5 +15,4 @@ export async function resetTournament() {
 
   revalidatePath("/");
   revalidatePath("/admin");
-  return { success: true };
 }
