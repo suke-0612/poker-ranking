@@ -11,8 +11,8 @@ export default function AdminLayout({
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 shadow-lg">
         <div className="p-6">
-          <h2 className="text-xl font-bold text-white tracking-tight">Admin Panel</h2>
-          <p className="text-xs text-slate-500 mt-1">Poker Ranking App</p>
+          <h2 className="text-xl font-bold text-white tracking-tight">管理パネル</h2>
+          <p className="text-xs text-slate-500 mt-1">ポーカーランキング管理</p>
         </div>
         <nav className="flex flex-row md:flex-col gap-1 px-4 pb-4 overflow-x-auto">
           <Link
@@ -20,28 +20,28 @@ export default function AdminLayout({
             className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-slate-800 hover:text-white transition-colors flex-shrink-0"
           >
             <Trophy size={18} />
-            <span className="font-medium">Scores</span>
+            <span className="font-medium">スコア入力</span>
           </Link>
           <Link
             href="/admin/master"
             className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-slate-800 hover:text-white transition-colors flex-shrink-0"
           >
             <Users size={18} />
-            <span className="font-medium">Master Data</span>
+            <span className="font-medium">マスタデータ管理</span>
           </Link>
           <Link
             href="/admin/tournaments"
             className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-slate-800 hover:text-white transition-colors flex-shrink-0"
           >
             <Flag size={18} />
-            <span className="font-medium">Tournaments</span>
+            <span className="font-medium">大会管理</span>
           </Link>
           <Link
             href="/"
             className="flex items-center gap-3 px-4 py-3 mt-4 rounded-md text-amber-500 hover:bg-amber-500/10 transition-colors flex-shrink-0"
           >
             <Database size={18} />
-            <span className="font-medium">View Live Ranking</span>
+            <span className="font-medium">ランキング画面を見る</span>
           </Link>
         </nav>
       </aside>

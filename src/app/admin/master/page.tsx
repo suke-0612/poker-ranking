@@ -20,20 +20,20 @@ export default async function MasterPage() {
   return (
     <div className="space-y-10 pb-20">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Master Data</h1>
-        <p className="text-slate-500">Manage players and tournament prizes here.</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">マスタデータ管理</h1>
+        <p className="text-slate-500">プレイヤーと大会の景品を管理します。</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* User Management */}
         <section className="bg-white p-6 rounded-xl border shadow-sm">
-          <h2 className="text-xl font-semibold mb-6">Players</h2>
+          <h2 className="text-xl font-semibold mb-6">プレイヤー</h2>
           
           <form action={addUser} className="flex gap-3 mb-8">
             <input
               type="text"
               name="username"
-              placeholder="New player name..."
+              placeholder="新しいプレイヤー名..."
               className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900"
               required
             />
@@ -41,7 +41,7 @@ export default async function MasterPage() {
               type="submit"
               className="bg-slate-900 text-white px-5 py-2 rounded-md font-medium hover:bg-slate-800 transition-colors"
             >
-              Add
+              追加
             </button>
           </form>
 
@@ -66,22 +66,22 @@ export default async function MasterPage() {
                       user.isActive ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-green-100 text-green-700 hover:bg-green-200"
                     }`}
                   >
-                    {user.isActive ? "Disable" : "Enable"}
+                    {user.isActive ? "無効化" : "有効化"}
                   </button>
                 </form>
               </div>
             ))}
-            {users.length === 0 && <p className="text-slate-500 text-center py-4">No players found.</p>}
+            {users.length === 0 && <p className="text-slate-500 text-center py-4">プレイヤーが登録されていません。</p>}
           </div>
         </section>
 
         {/* Prize Management */}
         <section className="bg-white p-6 rounded-xl border shadow-sm">
-          <h2 className="text-xl font-semibold mb-6">Prizes (Active Tournament)</h2>
+          <h2 className="text-xl font-semibold mb-6">景品 (開催中の大会)</h2>
           
           {!activeTournament ? (
             <div className="bg-amber-50 text-amber-800 p-4 rounded-md">
-              No active tournament found. Please create one in the Tournaments tab first.
+              開催中の大会が見つかりません。先に大会管理タブで大会を作成してください。
             </div>
           ) : (
             <form action={updatePrizes} className="space-y-4">
@@ -94,7 +94,7 @@ export default async function MasterPage() {
                     type="text"
                     name={`prize_${prize.rank}`}
                     defaultValue={prize.description}
-                    placeholder={`Prize for rank ${prize.rank}...`}
+                    placeholder={`${prize.rank}位の景品...`}
                     className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900"
                   />
                 </div>
@@ -105,7 +105,7 @@ export default async function MasterPage() {
                   type="submit"
                   className="bg-amber-500 text-white px-6 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors"
                 >
-                  Save Prizes
+                  景品を保存
                 </button>
               </div>
             </form>

@@ -8,12 +8,12 @@ export function ResetForm() {
         type="submit"
         className="bg-red-600 text-white px-6 py-3 rounded-md font-medium hover:bg-red-700 transition-colors shadow-sm"
         onClick={(e) => {
-          if (!confirm("Are you sure you want to reset the tournament? This will archive all current scores and start from scratch.")) {
+          if (!confirm("本当に大会をリセットしますか？ 現在のスコアはすべてアーカイブされ、ゼロからスタートします。")) {
             e.preventDefault();
           }
         }}
       >
-        End Current & Start New Tournament
+        現在の大会を終了して新しく開始
       </button>
     </form>
   );

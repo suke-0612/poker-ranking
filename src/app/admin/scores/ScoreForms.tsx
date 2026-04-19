@@ -39,7 +39,7 @@ export function NewGameButton() {
         className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors disabled:opacity-50 shadow-sm"
       >
         <Plus size={18} />
-        {loading ? "Creating..." : "New Game Round"}
+        {loading ? "作成中..." : "新しいゲームを開始"}
       </button>
     </form>
   );
@@ -83,7 +83,7 @@ export function ScoreListForm({ gameId, users, scoresMap }: { gameId: number, us
           disabled={saving}
           className="bg-slate-900 text-white px-8 py-2.5 rounded-md font-medium hover:bg-slate-800 transition-colors disabled:opacity-50 shadow-sm"
         >
-          {saving ? "Saving..." : "Save Scores for this Game"}
+          {saving ? "保存中..." : "このゲームのスコアを保存"}
         </button>
       </div>
     </form>

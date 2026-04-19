@@ -22,7 +22,7 @@ export default async function ScoresPage(props: { searchParams: Promise<{ gameId
   if (!activeTournament) {
     return (
       <div className="p-8 text-center text-slate-500 bg-white rounded-xl border border-dashed">
-        <p>No active tournament found. Please create one in the Tournaments tab.</p>
+        <p>開催中の大会が見つかりません。先に大会管理タブで大会を作成してください。</p>
       </div>
     );
   }
@@ -57,9 +57,9 @@ export default async function ScoresPage(props: { searchParams: Promise<{ gameId
     <div className="space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Scores</h1>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">スコア入力</h1>
           <p className="text-slate-500">
-            Select a game to edit its scores or start a new game round.
+            編集するゲームを選択するか、新しいゲームを開始してください。
           </p>
         </div>
         <NewGameButton />
@@ -68,10 +68,10 @@ export default async function ScoresPage(props: { searchParams: Promise<{ gameId
       <section className="bg-white p-6 rounded-xl border shadow-sm">
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">
-            Select Game Round
+            ゲーム（ラウンド）の選択
           </h2>
           {games.length === 0 ? (
-            <div className="text-sm text-slate-500">No games created yet.</div>
+            <div className="text-sm text-slate-500">まだゲームが作成されていません。</div>
           ) : (
             <GameSelector games={games} selectedGameId={selectedGame?.id || null} />
           )}
@@ -79,17 +79,17 @@ export default async function ScoresPage(props: { searchParams: Promise<{ gameId
 
         <div className="border-t pt-6">
           <h2 className="text-xl font-semibold mb-6">
-            {selectedGame ? `Editing Scores: Game ${gameIndex}` : "Player Scores"}
+            {selectedGame ? `スコア編集: ゲーム ${gameIndex}` : "プレイヤースコア"}
           </h2>
           
           {!selectedGame ? (
             <div className="text-center py-10 bg-slate-50 rounded-lg text-slate-500 border border-dashed">
-              Click "New Game Round" to create the first game for this tournament.
+              「新しいゲームを開始」ボタンをクリックして、最初のゲームを作成してください。
             </div>
           ) : (
             <>
               {users.length === 0 ? (
-                <p className="text-center text-slate-500 py-4">No active players found. Add players in Master Data.</p>
+                <p className="text-center text-slate-500 py-4">有効なプレイヤーがいません。マスタデータ画面でプレイヤーを追加してください。</p>
               ) : (
                 <ScoreListForm gameId={selectedGame.id} users={users} scoresMap={scoresMap} />
               )}

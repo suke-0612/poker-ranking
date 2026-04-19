@@ -15,18 +15,18 @@ export default async function TournamentsPage() {
   return (
     <div className="space-y-10 pb-20">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Tournaments</h1>
-        <p className="text-slate-500">Manage tournament lifecycle and history.</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">大会管理</h1>
+        <p className="text-slate-500">大会の開始・終了および履歴を管理します。</p>
       </div>
 
       <section className="bg-white p-6 rounded-xl border border-red-200 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 w-2 h-full bg-red-500" />
         <h2 className="text-xl font-semibold mb-2 flex items-center gap-2 text-red-700">
           <AlertTriangle size={20} />
-          Reset Tournament
+          大会リセット
         </h2>
         <p className="text-slate-600 mb-6 max-w-2xl">
-          This will end the current active tournament and start a completely new one. All scores will start from 0. Past tournament data will be archived.
+          現在の大会を終了し、新しく大会を開始します。スコアはすべて0からスタートします。過去の大会データはアーカイブとして保存されます。
         </p>
         <ResetForm />
       </section>
@@ -34,16 +34,16 @@ export default async function TournamentsPage() {
       <section className="bg-white p-6 rounded-xl border shadow-sm">
         <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
           <History size={20} />
-          Tournament History
+          大会履歴
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-500">
               <tr>
                 <th className="px-4 py-3 font-medium">ID</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Started At</th>
-                <th className="px-4 py-3 font-medium">Total Games</th>
+                <th className="px-4 py-3 font-medium">状態</th>
+                <th className="px-4 py-3 font-medium">開始日時</th>
+                <th className="px-4 py-3 font-medium">合計ゲーム数</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -53,11 +53,11 @@ export default async function TournamentsPage() {
                   <td className="px-4 py-3">
                     {t.isActive ? (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                        Active
+                        開催中
                       </span>
                     ) : (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                        Archived
+                        終了済み
                       </span>
                     )}
                   </td>
@@ -69,7 +69,7 @@ export default async function TournamentsPage() {
               ))}
               {tournaments.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-6 text-center text-slate-500">No tournaments found.</td>
+                  <td colSpan={4} className="px-4 py-6 text-center text-slate-500">大会履歴がありません。</td>
                 </tr>
               )}
             </tbody>
