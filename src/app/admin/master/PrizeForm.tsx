@@ -23,6 +23,7 @@ export function PrizeForm({
   return (
     <form action={handleUpdate} className="space-y-4">
       <input type="hidden" name="tournamentId" value={tournamentId} />
+      <input type="hidden" name="prizeCount" value={prizes.length} />
       {prizes.map((prize) => (
         <div key={prize.rank} className="flex items-center gap-4">
           <label className="w-16 font-bold text-slate-500 text-right">

@@ -26,9 +26,10 @@ export async function toggleUserActive(id: number, isActive: boolean) {
 
 export async function updatePrizes(formData: FormData) {
   const tournamentId = parseInt(formData.get("tournamentId") as string);
+  const prizeCount = parseInt(formData.get("prizeCount") as string) || 3;
   if (!tournamentId) return;
 
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= prizeCount; i++) {
     const description = formData.get(`prize_${i}`) as string;
     
     if (description) {
@@ -65,4 +66,19 @@ export async function deleteUser(id: number) {
   });
 
   revalidatePath("/admin/master");
+}
+
+export async function updateTournamentSettings(formData: FormData) {
+  const id = parseInt(formData.get("tournamentId") as string);
+  const playerCount = parseInt(formData.get("playerCount") as string);
+
+  if (!id || !playerCount) return;
+
+  await prisma.tournament.update({
+    where: { id },
+    data: { playerCount },
+  });
+
+  revalidatePath("/admin/master");
+  revalidatePath("/");
 }

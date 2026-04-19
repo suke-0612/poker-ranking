@@ -75,7 +75,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       tournament,
-      ranking: ranking.slice(0, 10),
+      ranking: ranking.slice(0, tournament.playerCount),
       activeTournaments,
     });
   } catch (error) {

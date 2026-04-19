@@ -5,6 +5,8 @@ import { TournamentSelector } from "@/components/TournamentSelector";
 import { AddUserForm, ToggleUserActiveForm } from "./PlayerForms";
 import { PrizeForm } from "./PrizeForm";
 
+import { SettingsForm } from "./SettingsForm";
+
 export default async function MasterPage(props: {
   searchParams: Promise<{ tournamentId?: string }>;
 }) {
@@ -35,7 +37,7 @@ export default async function MasterPage(props: {
       })
     : [];
 
-  const prizes = Array.from({ length: 10 }, (_, i) => {
+  const prizes = Array.from({ length: activeTournament?.playerCount || 10 }, (_, i) => {
     const rank = i + 1;
     const existing = activeTournament?.prizes.find((p) => p.rank === rank);
     return { rank, description: existing?.description || "" };
@@ -62,6 +64,12 @@ export default async function MasterPage(props: {
         </div>
       ) : (
         <>
+          <div className="mb-6">
+            <SettingsForm
+              tournamentId={activeTournament.id}
+              playerCount={activeTournament.playerCount}
+            />
+          </div>
           <div className="bg-slate-50 border rounded-lg px-4 py-3 text-sm text-slate-600">
             管理中の大会:{" "}
             <span className="font-semibold text-slate-800">
