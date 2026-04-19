@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  isActive  Boolean  @default(true) // 論理削除用
+  createdAt DateTime @default(now()) // 同点時のソート保証用
+  scores    Score[]
+}
+
+model Tournament {
+  id        Int      @id @default(autoincrement())
+  isActive  Boolean  @default(true) // 進行中の大会のみ true
+  createdAt DateTime @default(now())
+  prizes    Prize[]
+  games     Game[]
+}
+
+model Prize {
+  tournamentId Int
+  rank         Int      // 1 〜 10
+  description  String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+
+  @@id([tournamentId, rank])
+}
+
+model Game {
+  id           Int        @id @default(autoincrement())
+  tournamentId Int
+  createdAt    DateTime   @default(now())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  scores       Score[]
+}
+
+model Score {
+  gameId Int
+  userId Int
+  score  Int    // 0以上の絶対値
+  game   Game   @relation(fields: [gameId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([gameId, userId])
+}
