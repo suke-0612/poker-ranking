@@ -45,7 +45,7 @@ export default async function ScoresPage(props: { searchParams: Promise<{ gameId
     const scores = await prisma.score.findMany({
       where: { gameId: selectedGame.id },
     });
-    scores.forEach((s) => {
+    scores.forEach((s: { userId: number; score: number }) => {
       scoresMap[s.userId] = s.score;
     });
   }

@@ -23,7 +23,7 @@ export async function createNewGameAndCopyScores() {
 
   const lastGame = activeTournament.games[0];
   if (lastGame && lastGame.scores.length > 0) {
-    const newScores = lastGame.scores.map((s) => ({
+    const newScores = lastGame.scores.map((s: { userId: number; score: number }) => ({
       gameId: newGame.id,
       userId: s.userId,
       score: s.score,
