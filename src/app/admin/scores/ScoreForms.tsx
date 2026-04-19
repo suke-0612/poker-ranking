@@ -1,59 +1,65 @@
 "use client";
 
 import { createNewGameAndCopyScores, updateAllScores } from "@/actions/score";
-import { Trophy, Plus } from "lucide-react";
-import { useState } from "react";
+import { Trophy, Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { SubmitButton } from "@/components/SubmitButton";
+
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export function GameSelector({ games, selectedGameId }: { games: any[], selectedGameId: number | null }) {
+  const router = useRouter();
+  const [loadingId, setLoadingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    setLoadingId(null);
+  }, [selectedGameId]);
+
+  const handleSelect = (id: number) => {
+    if (id === selectedGameId) return;
+    setLoadingId(id);
+    router.push(`/admin/scores?gameId=${id}`);
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       {games.map((g, i) => (
-        <Link
+        <button
           key={g.id}
-          href={`/admin/scores?gameId=${g.id}`}
-          className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
+          onClick={() => handleSelect(g.id)}
+          disabled={loadingId !== null}
+          className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-colors ${
             g.id === selectedGameId
               ? "bg-slate-900 text-white shadow-sm"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-50"
           }`}
         >
+          {loadingId === g.id && <Loader2 className="animate-spin" size={14} />}
           Game {i + 1}
-        </Link>
+        </button>
       ))}
     </div>
   );
 }
 
 export function NewGameButton() {
-  const [loading, setLoading] = useState(false);
   return (
-    <form action={async () => {
-      setLoading(true);
-      await createNewGameAndCopyScores();
-      setLoading(false);
-    }}>
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors disabled:opacity-50 shadow-sm"
+    <form action={createNewGameAndCopyScores}>
+      <SubmitButton
+        loadingText="作成中..."
+        className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors shadow-sm"
       >
         <Plus size={18} />
-        {loading ? "作成中..." : "新しいゲームを開始"}
-      </button>
+        新しいゲームを開始
+      </SubmitButton>
     </form>
   );
 }
 
 export function ScoreListForm({ gameId, users, scoresMap }: { gameId: number, users: any[], scoresMap: Record<number, number> }) {
-  const [saving, setSaving] = useState(false);
-
   return (
-    <form action={async (formData) => {
-      setSaving(true);
-      await updateAllScores(formData);
-      setSaving(false);
-    }}>
+    <form action={updateAllScores}>
       <input type="hidden" name="gameId" value={gameId} />
       
       <div className="space-y-3 mb-6">
@@ -78,13 +84,12 @@ export function ScoreListForm({ gameId, users, scoresMap }: { gameId: number, us
       </div>
 
       <div className="flex justify-end pt-4 border-t">
-        <button
-          type="submit"
-          disabled={saving}
-          className="bg-slate-900 text-white px-8 py-2.5 rounded-md font-medium hover:bg-slate-800 transition-colors disabled:opacity-50 shadow-sm"
+        <SubmitButton
+          loadingText="保存中..."
+          className="bg-slate-900 text-white px-8 py-2.5 rounded-md font-medium hover:bg-slate-800 transition-colors shadow-sm"
         >
-          {saving ? "保存中..." : "このゲームのスコアを保存"}
-        </button>
+          このゲームのスコアを保存
+        </SubmitButton>
       </div>
     </form>
   );

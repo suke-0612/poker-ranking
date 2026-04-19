@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { addUser, toggleUserActive, updatePrizes } from "@/actions/master";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function MasterPage() {
   const users = await prisma.user.findMany({
@@ -37,12 +38,12 @@ export default async function MasterPage() {
               className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900"
               required
             />
-            <button
-              type="submit"
+            <SubmitButton
+              loadingText="処理中..."
               className="bg-slate-900 text-white px-5 py-2 rounded-md font-medium hover:bg-slate-800 transition-colors"
             >
               追加
-            </button>
+            </SubmitButton>
           </form>
 
           <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
@@ -60,14 +61,14 @@ export default async function MasterPage() {
                     await toggleUserActive(user.id, !user.isActive);
                   }}
                 >
-                  <button
-                    type="submit"
+                  <SubmitButton
+                    loadingText="..."
                     className={`text-sm px-3 py-1.5 rounded-md transition-colors ${
                       user.isActive ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-green-100 text-green-700 hover:bg-green-200"
                     }`}
                   >
                     {user.isActive ? "無効化" : "有効化"}
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             ))}
@@ -101,12 +102,12 @@ export default async function MasterPage() {
               ))}
               
               <div className="pt-4 border-t mt-6 text-right">
-                <button
-                  type="submit"
+                <SubmitButton
+                  loadingText="保存中..."
                   className="bg-amber-500 text-white px-6 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors"
                 >
                   景品を保存
-                </button>
+                </SubmitButton>
               </div>
             </form>
           )}
