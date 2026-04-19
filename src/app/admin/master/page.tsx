@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { addUser, toggleUserActive, updatePrizes, deleteUser } from "@/actions/master";
-import { SubmitButton } from "@/components/SubmitButton";
+import { deleteUser } from "@/actions/master";
 import { DeleteUserButton } from "./DeleteUserButton";
 import { TournamentSelector } from "@/components/TournamentSelector";
+import { AddUserForm, ToggleUserActiveForm } from "./PlayerForms";
+import { PrizeForm } from "./PrizeForm";
 
 export default async function MasterPage(props: {
   searchParams: Promise<{ tournamentId?: string }>;
@@ -15,7 +16,7 @@ export default async function MasterPage(props: {
     orderBy: { createdAt: "desc" },
   });
 
-  // 選択中の大会（クエリパラメータ優先、なければ最新）
+  // 選択中の大会
   const selectedTournamentId = searchParams.tournamentId
     ? parseInt(searchParams.tournamentId)
     : activeTournaments[0]?.id ?? null;
@@ -31,9 +32,6 @@ export default async function MasterPage(props: {
     ? await prisma.user.findMany({
         where: { tournamentId: activeTournament.id },
         orderBy: { createdAt: "desc" },
-        include: {
-          _count: { select: { scores: true } },
-        },
       })
     : [];
 
@@ -64,37 +62,19 @@ export default async function MasterPage(props: {
         </div>
       ) : (
         <>
-          {/* 現在管理中の大会名 */}
-          {activeTournaments.length > 0 && (
-            <div className="bg-slate-50 border rounded-lg px-4 py-3 text-sm text-slate-600">
-              管理中の大会:{" "}
-              <span className="font-semibold text-slate-800">
-                {activeTournament.name || `大会 #${activeTournament.id}`}
-              </span>
-            </div>
-          )}
+          <div className="bg-slate-50 border rounded-lg px-4 py-3 text-sm text-slate-600">
+            管理中の大会:{" "}
+            <span className="font-semibold text-slate-800">
+              {activeTournament.name || `大会 #${activeTournament.id}`}
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* User Management */}
             <section className="bg-white p-6 rounded-xl border shadow-sm">
               <h2 className="text-xl font-semibold mb-6">プレイヤー</h2>
 
-              <form action={addUser} className="flex gap-3 mb-8">
-                <input type="hidden" name="tournamentId" value={activeTournament.id} />
-                <input
-                  type="text"
-                  name="username"
-                  placeholder="新しいプレイヤー名..."
-                  className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900"
-                  required
-                />
-                <SubmitButton
-                  loadingText="処理中..."
-                  className="bg-slate-900 text-white px-5 py-2 rounded-md font-medium hover:bg-slate-800 transition-colors"
-                >
-                  追加
-                </SubmitButton>
-              </form>
+              <AddUserForm tournamentId={activeTournament.id} />
 
               <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
                 {users.map((user) => (
@@ -106,21 +86,7 @@ export default async function MasterPage(props: {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <form
-                        action={async () => {
-                          "use server";
-                          await toggleUserActive(user.id, !user.isActive);
-                        }}
-                      >
-                        <SubmitButton
-                          loadingText="..."
-                          className={`text-sm px-3 py-1.5 rounded-md transition-colors ${
-                            user.isActive ? "bg-amber-100 text-amber-700 hover:bg-amber-200" : "bg-green-100 text-green-700 hover:bg-green-200"
-                          }`}
-                        >
-                          {user.isActive ? "無効化" : "有効化"}
-                        </SubmitButton>
-                      </form>
+                      <ToggleUserActiveForm userId={user.id} isActive={user.isActive} />
                       <DeleteUserButton
                         onDelete={async () => {
                           "use server";
@@ -130,40 +96,16 @@ export default async function MasterPage(props: {
                     </div>
                   </div>
                 ))}
-                {users.length === 0 && <p className="text-slate-500 text-center py-4">プレイヤーが登録されていません。</p>}
+                {users.length === 0 && (
+                  <p className="text-slate-500 text-center py-4">プレイヤーが登録されていません。</p>
+                )}
               </div>
             </section>
 
             {/* Prize Management */}
             <section className="bg-white p-6 rounded-xl border shadow-sm">
               <h2 className="text-xl font-semibold mb-6">景品</h2>
-
-              <form action={updatePrizes} className="space-y-4">
-                <input type="hidden" name="tournamentId" value={activeTournament.id} />
-                {prizes.map((prize) => (
-                  <div key={prize.rank} className="flex items-center gap-4">
-                    <label className="w-16 font-bold text-slate-500 text-right">
-                      {prize.rank}位
-                    </label>
-                    <input
-                      type="text"
-                      name={`prize_${prize.rank}`}
-                      defaultValue={prize.description}
-                      placeholder={`${prize.rank}位の景品...`}
-                      className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900"
-                    />
-                  </div>
-                ))}
-
-                <div className="pt-4 border-t mt-6 text-right">
-                  <SubmitButton
-                    loadingText="保存中..."
-                    className="bg-amber-500 text-white px-6 py-2 rounded-md font-medium hover:bg-amber-600 transition-colors"
-                  >
-                    景品を保存
-                  </SubmitButton>
-                </div>
-              </form>
+              <PrizeForm tournamentId={activeTournament.id} prizes={prizes} />
             </section>
           </div>
         </>

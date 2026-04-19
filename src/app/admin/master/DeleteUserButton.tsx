@@ -1,11 +1,17 @@
 "use client";
 
 import { SubmitButton } from "@/components/SubmitButton";
+import { toast } from "sonner";
 
 export function DeleteUserButton({ onDelete }: { onDelete: () => Promise<void> }) {
   const handleDelete = async () => {
     if (confirm("このプレイヤーを削除しますか？\nこの操作は元に戻せません。")) {
-      await onDelete();
+      try {
+        await onDelete();
+        toast.success("プレイヤーを削除しました");
+      } catch (error) {
+        toast.error("削除に失敗しました");
+      }
     }
   };
 

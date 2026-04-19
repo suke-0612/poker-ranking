@@ -2,10 +2,24 @@
 
 import { createTournament, closeTournament } from "@/actions/tournament";
 import { SubmitButton } from "@/components/SubmitButton";
+import { toast } from "sonner";
+import { useRef } from "react";
 
 export function CreateTournamentForm() {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleCreate = async (formData: FormData) => {
+    try {
+      await createTournament(formData);
+      toast.success("新しい大会を開始しました");
+      formRef.current?.reset();
+    } catch (error) {
+      toast.error("大会の作成に失敗しました");
+    }
+  };
+
   return (
-    <form action={createTournament} className="flex flex-col sm:flex-row gap-3">
+    <form ref={formRef} action={handleCreate} className="flex flex-col sm:flex-row gap-3">
       <input
         type="text"
         name="name"
@@ -25,7 +39,12 @@ export function CreateTournamentForm() {
 export function CloseTournamentButton({ id }: { id: number }) {
   const handleClose = async () => {
     if (confirm("この大会を終了しますか？")) {
-      await closeTournament(id);
+      try {
+        await closeTournament(id);
+        toast.success("大会を終了しました");
+      } catch (error) {
+        toast.error("大会の終了に失敗しました");
+      }
     }
   };
 

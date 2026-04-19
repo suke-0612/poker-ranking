@@ -3,6 +3,7 @@
 import { createNewGameAndCopyScores, updateAllScores } from "@/actions/score";
 import { Trophy, Plus, Loader2 } from "lucide-react";
 import { SubmitButton } from "@/components/SubmitButton";
+import { toast } from "sonner";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -55,8 +56,17 @@ export function GameSelector({
 }
 
 export function NewGameButton({ tournamentId }: { tournamentId: number }) {
+  const handleCreate = async (formData: FormData) => {
+    try {
+      await createNewGameAndCopyScores(formData);
+      toast.success("新しいゲームを開始しました");
+    } catch (error) {
+      toast.error("ゲームの作成に失敗しました");
+    }
+  };
+
   return (
-    <form action={createNewGameAndCopyScores}>
+    <form action={handleCreate}>
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <SubmitButton
         loadingText="作成中..."
@@ -78,8 +88,17 @@ export function ScoreListForm({
   users: any[];
   scoresMap: Record<number, number>;
 }) {
+  const handleUpdate = async (formData: FormData) => {
+    try {
+      await updateAllScores(formData);
+      toast.success("スコアを保存しました");
+    } catch (error) {
+      toast.error("スコアの保存に失敗しました");
+    }
+  };
+
   return (
-    <form action={updateAllScores}>
+    <form action={handleUpdate}>
       <input type="hidden" name="gameId" value={gameId} />
 
       <div className="space-y-3 mb-6">
