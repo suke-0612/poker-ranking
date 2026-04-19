@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { History, Trophy } from "lucide-react";
-import { CreateTournamentForm, CloseTournamentButton } from "./TournamentForms";
+import { CreateTournamentForm, CloseTournamentButton, SetFeaturedButton } from "./TournamentForms";
 
 export default async function TournamentsPage() {
   const tournaments = await prisma.tournament.findMany({
@@ -57,7 +57,10 @@ export default async function TournamentsPage() {
                     ゲーム数: {t._count.games} ／ プレイヤー数: {t._count.users}
                   </p>
                 </div>
-                <CloseTournamentButton id={t.id} />
+                <div className="flex items-center gap-2">
+                  <SetFeaturedButton id={t.id} isFeatured={t.isFeatured} />
+                  <CloseTournamentButton id={t.id} />
+                </div>
               </div>
             ))}
           </div>

@@ -17,8 +17,28 @@ export async function createTournament(formData: FormData) {
 export async function closeTournament(id: number) {
   await prisma.tournament.update({
     where: { id },
-    data: { isActive: false },
+    data: { isActive: false, isFeatured: false },
   });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function setFeaturedTournament(id: number) {
+  try {
+    await prisma.$transaction([
+      prisma.tournament.updateMany({
+        data: { isFeatured: false },
+      }),
+      prisma.tournament.update({
+        where: { id },
+        data: { isFeatured: true },
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to set featured tournament:", error);
+    throw error;
+  }
 
   revalidatePath("/");
   revalidatePath("/admin");

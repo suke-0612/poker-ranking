@@ -23,7 +23,10 @@ export async function GET(request: Request) {
         })
       : await prisma.tournament.findFirst({
           where: { isActive: true },
-          orderBy: { createdAt: 'desc' },
+          orderBy: [
+            { isFeatured: 'desc' }, // isFeatured: true を最優先
+            { createdAt: 'desc' },
+          ],
           include: {
             prizes: true,
             games: {
@@ -73,9 +76,15 @@ export async function GET(request: Request) {
       select: { id: true, name: true },
     });
 
+    // 参加人数を取得
+    const totalParticipants = await prisma.user.count({
+      where: { tournamentId: tournament.id, isActive: true },
+    });
+
     return NextResponse.json({
       tournament,
       ranking: ranking.slice(0, tournament.playerCount),
+      totalParticipants,
       activeTournaments,
     });
   } catch (error) {

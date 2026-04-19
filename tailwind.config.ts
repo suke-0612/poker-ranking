@@ -70,6 +70,10 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        sans: ["var(--font-noto-sans-jp)", "var(--font-geist-sans)", "sans-serif"],
+        rammetto: ["var(--font-rammetto)"],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

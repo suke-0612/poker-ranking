@@ -1,9 +1,10 @@
 "use client";
 
-import { createTournament, closeTournament } from "@/actions/tournament";
+import { createTournament, closeTournament, setFeaturedTournament } from "@/actions/tournament";
 import { SubmitButton } from "@/components/SubmitButton";
 import { toast } from "sonner";
 import { useRef } from "react";
+import { Star } from "lucide-react";
 
 export function CreateTournamentForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -31,6 +32,33 @@ export function CreateTournamentForm() {
         className="bg-slate-900 text-white px-6 py-2 rounded-md font-medium hover:bg-slate-800 transition-colors shadow-sm whitespace-nowrap"
       >
         新しい大会を開始
+      </SubmitButton>
+    </form>
+  );
+}
+
+export function SetFeaturedButton({ id, isFeatured }: { id: number; isFeatured: boolean }) {
+  const handleSetFeatured = async () => {
+    try {
+      await setFeaturedTournament(id);
+      toast.success("表示する大会を設定しました");
+    } catch (error) {
+      toast.error("設定に失敗しました");
+    }
+  };
+
+  return (
+    <form action={handleSetFeatured}>
+      <SubmitButton
+        loadingText="..."
+        className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${
+          isFeatured
+            ? "bg-amber-100 text-amber-700 border border-amber-200"
+            : "bg-white text-slate-500 border border-slate-200 hover:bg-slate-50"
+        }`}
+      >
+        <Star size={14} className={isFeatured ? "fill-current" : ""} />
+        {isFeatured ? "表示中" : "ルートに表示"}
       </SubmitButton>
     </form>
   );

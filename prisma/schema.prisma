@@ -25,6 +25,7 @@ model Tournament {
   id          Int      @id @default(autoincrement())
   name        String?  // 大会名（任意）
   isActive    Boolean  @default(true) // 進行中の大会のみ true
+  isFeatured  Boolean  @default(false) // ルートに表示する大会
   createdAt   DateTime @default(now())
   playerCount Int      @default(10) // ランキング表示人数・景品枠数
   users       User[]
