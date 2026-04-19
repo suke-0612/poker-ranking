@@ -90,12 +90,11 @@ export default function Home() {
         >
             {ranking.map((row: any, index: number) => (
               <div key={index} className="flex items-center gap-2 md:gap-4">
-                {/* Prize (Outside Left) */}
-                <div className="w-16 md:w-24 shrink-0 flex justify-end items-center">
+                <div className="w-24 md:w-48 shrink-0 flex justify-end items-center px-2">
                   {row.prize && (
                     <div
                       title={row.prize}
-                      className="text-xs md:text-sm font-bold text-slate-100 bg-slate-700 border border-slate-600 px-2 md:px-3 py-1 rounded-md text-center max-w-full truncate shadow-sm"
+                      className="text-sm md:text-2xl font-black text-white bg-gradient-to-br from-slate-600 to-slate-800 border-2 border-slate-500/50 px-3 py-2 md:px-6 md:py-4 rounded-xl text-center max-w-full shadow-2xl tracking-tight leading-tight"
                     >
                       {row.prize}
                     </div>
